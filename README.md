@@ -14,8 +14,8 @@ output:
 
 ## Contents
 
-* [Probit Model](#probit-model)
-* [Robit Model](#robit-model)
+* [Probit](#probit)
+* [Robit](#robit)
 
 # Probit
 
