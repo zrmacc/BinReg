@@ -1,19 +1,16 @@
 ---
-title: "Probit Regression"
+title: "README"
 author: "Zachary McCaw"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Probit Regression}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+date: "2018-08-18"
+output: 
+  html_document: 
+    keep_md: TRUE
+--- 
 
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.width=2*3, fig.height=1.5*2, fig.align="center", fig.path='Figs/',echo=T, warning=F, message=F, cache=F, results='hold');
-set.seed(201);
-library(Probit);
-```
+# Package Vignette
+
+
+
 
 ## Contents
 
@@ -33,7 +30,8 @@ $$
 
 ## Implementation
 
-```{r}
+
+```r
 # Subjects
 n = 1e3;
 # Design matrix
@@ -49,6 +47,16 @@ M = fit.Probit(y=y,Z=Z);
 show(M);
 ```
 
+```
+## 5 update(s) performed before tolerance limit. 
+## Fitted Probit Model
+## Estimated Coefficients:
+##   Coeff    Est     SE      L      U        p
+## 1    z1  0.976 0.0700  0.839  1.110 3.74e-44
+## 2    z2 -1.010 0.0706 -1.140 -0.867 5.66e-46
+## 3    z3  1.080 0.0742  0.931  1.220 1.11e-47
+```
+
 # Robit
 
 ## Model
@@ -62,7 +70,8 @@ $$
 
 ## Implementation
 
-```{r}
+
+```r
 # Degrees of freedom
 df = 7;
 # Robit outcome
@@ -70,4 +79,14 @@ y = 1*(rt(n=n,ncp=eta,df=df)>0);
 # Recover regression parameters
 M = fit.Robit(y=y,Z=Z);
 show(M);
+```
+
+```
+## 5 update(s) performed before tolerance limit. 
+## Fitted Robit Model
+## Estimated Coefficients:
+##   Coeff   Est     SE      L      U        p
+## 1    z1  1.09 0.0827  0.927  1.250 1.35e-39
+## 2    z2 -1.06 0.0816 -1.220 -0.898 1.75e-38
+## 3    z3  1.11 0.0848  0.948  1.280 2.01e-39
 ```

@@ -85,7 +85,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1>Probit</h1>
 <div id="model" class="section level2">
 <h2>Model</h2>
-<p>Suppose <span class="math inline">\(y_{i}\in\{0,1\}\)</span> is a binary outcome, and <span class="math inline">\(z_{i}\in\mathbb{R}^{p}\)</span> is a set of covariates. Let <span class="math inline">\(\eta_{i} = z_{i}'\beta\)</span> denote the linear predictor. Consider the hierarchical model:</p>
+<p>Suppose <span class="math inline">\(y_{i}\in\{0,1\}\)</span> is a binary outcome, and <span class="math inline">\(z_{i}\in\mathbb{R}^{p}\)</span> is a set of covariates. Let <span class="math inline">\(\eta_{i} = z_{i}'\beta\)</span> denote the linear predictor. Consider the model:</p>
 <p><span class="math display">\[
 \zeta_{i}|z_{i} \sim N\big(\eta_{i},1) \\
 y_{i} = I[\zeta_{i}&gt;0]
@@ -119,7 +119,7 @@ M =<span class="st"> </span><span class="kw">fit.Probit</span>(<span class="dt">
 <h1>Robit</h1>
 <div id="model-1" class="section level2">
 <h2>Model</h2>
-<p>Suppose <span class="math inline">\(y_{i}\in\{0,1\}\)</span> is a binary outcome, and <span class="math inline">\(z_{i}\in\mathbb{R}^{p}\)</span> is a set of covariates. Let <span class="math inline">\(\eta_{i} = z_{i}'\beta\)</span> denote the linear predictor. Consider the hierarchical model:</p>
+<p>Suppose <span class="math inline">\(y_{i}\in\{0,1\}\)</span> is a binary outcome, and <span class="math inline">\(z_{i}\in\mathbb{R}^{p}\)</span> is a set of covariates. Let <span class="math inline">\(\eta_{i} = z_{i}'\beta\)</span> denote the linear predictor. Consider the model:</p>
 <p><span class="math display">\[
 \zeta_{i}|z_{i} \sim t_{\nu}(\eta_{i}) \\
 y_{i} = I[\zeta_{i}&gt;0]
