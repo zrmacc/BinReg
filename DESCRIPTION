@@ -1,0 +1,20 @@
+Package: Probit
+Title: Probit
+Version: 0.1.0
+Authors@R: person("Zachary", "McCaw", email = "zmccaw@g.harvard.edu", role = c("aut", "cre"))
+Description: Implementation of probit and robit regression. 
+Depends: R (>= 3.4.2)
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+LinkingTo:
+    Rcpp,
+    RcppEigen
+Imports:
+    Rcpp,
+    methods,
+    stats
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
