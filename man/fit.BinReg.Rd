@@ -5,7 +5,7 @@
 \title{Fit Binary Regression Model}
 \usage{
 fit.BinReg(y, X = NULL, model = "logistic", df = NULL, sig = 0.05,
-  eps = 1e-08, report = T)
+  eps = 1e-08, maxit = 10, report = T)
 }
 \arguments{
 \item{y}{Binary 0/1 outcome vector.}
@@ -20,9 +20,9 @@ fit.BinReg(y, X = NULL, model = "logistic", df = NULL, sig = 0.05,
 
 \item{eps}{Tolerance for Newton-Raphson iterations.}
 
-\item{report}{Report fitting progress?}
-
 \item{maxit}{Maximum number of NR iterations.}
+
+\item{report}{Report fitting progress?}
 }
 \description{
 Fit Binary Regression Model

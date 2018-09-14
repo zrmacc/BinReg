@@ -105,7 +105,7 @@ show(M);
 ## Objective increment:  3.79e-10 
 ## 5 update(s) performed before tolerance limit.
 ## 
-## Fitted Probit Model
+## Fitted Logistic Model
 ## Estimated Coefficients:
 ##   Coeff   Point     SE       L      U        p
 ## 1    x1  1.0600 0.0661  0.9310  1.190 5.73e-58
@@ -149,7 +149,7 @@ show(M);
 ## Objective increment:  1.39e-11 
 ## 5 update(s) performed before tolerance limit.
 ## 
-## Fitted Robit Model
+## Fitted Logistic Model
 ## Estimated Coefficients:
 ##   Coeff   Point     SE      L       U        p
 ## 1    x1  1.0900 0.0753  0.944  1.2400 1.22e-47
