@@ -4,10 +4,10 @@
 \alias{diagQF}
 \title{Diagonal Quadratic Form}
 \usage{
-diagQF(Z, w)
+diagQF(X, w)
 }
 \arguments{
-\item{Z}{Design matrix.}
+\item{X}{Design matrix.}
 
 \item{w}{Weight vector.}
 }
@@ -15,6 +15,6 @@ diagQF(Z, w)
 Numeric matrix.
 }
 \description{
-Calculates the matrix \eqn{Z'WZ}, where \eqn{W} is a diagonal
+Calculates the matrix \eqn{X'WX}, where \eqn{W} is a diagonal
 matrix.
 }

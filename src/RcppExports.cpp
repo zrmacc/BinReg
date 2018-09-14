@@ -6,67 +6,117 @@
 
 using namespace Rcpp;
 
-// diagQF
-SEXP diagQF(const Eigen::Map<Eigen::MatrixXd> Z, const Eigen::Map<Eigen::VectorXd> w);
-RcppExport SEXP _Probit_diagQF(SEXP ZSEXP, SEXP wSEXP) {
+// fitOLS
+SEXP fitOLS(const Eigen::Map<Eigen::VectorXd> y, const Eigen::Map<Eigen::MatrixXd> X);
+RcppExport SEXP _BinReg_fitOLS(SEXP ySEXP, SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(fitOLS(y, X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fitWLS
+SEXP fitWLS(const Eigen::Map<Eigen::VectorXd> y, const Eigen::Map<Eigen::MatrixXd> X, const Eigen::Map<Eigen::VectorXd> w);
+RcppExport SEXP _BinReg_fitWLS(SEXP ySEXP, SEXP XSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type X(XSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type w(wSEXP);
-    rcpp_result_gen = Rcpp::wrap(diagQF(Z, w));
+    rcpp_result_gen = Rcpp::wrap(fitWLS(y, X, w));
     return rcpp_result_gen;
 END_RCPP
 }
-// fastDet
-SEXP fastDet(const Eigen::Map<Eigen::MatrixXd> A);
-RcppExport SEXP _Probit_fastDet(SEXP ASEXP) {
+// det
+SEXP det(const Eigen::Map<Eigen::MatrixXd> A);
+RcppExport SEXP _BinReg_det(SEXP ASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
-    rcpp_result_gen = Rcpp::wrap(fastDet(A));
+    rcpp_result_gen = Rcpp::wrap(det(A));
     return rcpp_result_gen;
 END_RCPP
 }
-// fastIP
-SEXP fastIP(const Eigen::Map<Eigen::MatrixXd> A, const Eigen::Map<Eigen::MatrixXd> B);
-RcppExport SEXP _Probit_fastIP(SEXP ASEXP, SEXP BSEXP) {
+// diagQF
+SEXP diagQF(const Eigen::Map<Eigen::MatrixXd> X, const Eigen::Map<Eigen::VectorXd> w);
+RcppExport SEXP _BinReg_diagQF(SEXP XSEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type B(BSEXP);
-    rcpp_result_gen = Rcpp::wrap(fastIP(A, B));
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(diagQF(X, w));
     return rcpp_result_gen;
 END_RCPP
 }
-// fastInv
-SEXP fastInv(const Eigen::Map<Eigen::MatrixXd> A);
-RcppExport SEXP _Probit_fastInv(SEXP ASEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
-    rcpp_result_gen = Rcpp::wrap(fastInv(A));
-    return rcpp_result_gen;
-END_RCPP
-}
-// fastMMp
-SEXP fastMMp(const Eigen::Map<Eigen::MatrixXd> A, const Eigen::Map<Eigen::MatrixXd> B);
-RcppExport SEXP _Probit_fastMMp(SEXP ASEXP, SEXP BSEXP) {
+// matIP
+SEXP matIP(const Eigen::Map<Eigen::MatrixXd> A, const Eigen::Map<Eigen::MatrixXd> B);
+RcppExport SEXP _BinReg_matIP(SEXP ASEXP, SEXP BSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
     Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type B(BSEXP);
-    rcpp_result_gen = Rcpp::wrap(fastMMp(A, B));
+    rcpp_result_gen = Rcpp::wrap(matIP(A, B));
+    return rcpp_result_gen;
+END_RCPP
+}
+// matInv
+SEXP matInv(const Eigen::Map<Eigen::MatrixXd> A);
+RcppExport SEXP _BinReg_matInv(SEXP ASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
+    rcpp_result_gen = Rcpp::wrap(matInv(A));
+    return rcpp_result_gen;
+END_RCPP
+}
+// MMP
+SEXP MMP(const Eigen::Map<Eigen::MatrixXd> A, const Eigen::Map<Eigen::MatrixXd> B);
+RcppExport SEXP _BinReg_MMP(SEXP ASEXP, SEXP BSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(MMP(A, B));
+    return rcpp_result_gen;
+END_RCPP
+}
+// matQF
+SEXP matQF(const Eigen::Map<Eigen::MatrixXd> X, const Eigen::Map<Eigen::MatrixXd> A);
+RcppExport SEXP _BinReg_matQF(SEXP XSEXP, SEXP ASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
+    rcpp_result_gen = Rcpp::wrap(matQF(X, A));
+    return rcpp_result_gen;
+END_RCPP
+}
+// SchurC
+SEXP SchurC(const Eigen::Map<Eigen::MatrixXd> Ibb, const Eigen::Map<Eigen::MatrixXd> Iaa, const Eigen::Map<Eigen::MatrixXd> Iba);
+RcppExport SEXP _BinReg_SchurC(SEXP IbbSEXP, SEXP IaaSEXP, SEXP IbaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type Ibb(IbbSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type Iaa(IaaSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type Iba(IbaSEXP);
+    rcpp_result_gen = Rcpp::wrap(SchurC(Ibb, Iaa, Iba));
     return rcpp_result_gen;
 END_RCPP
 }
 // tr
 SEXP tr(const Eigen::Map<Eigen::MatrixXd> A);
-RcppExport SEXP _Probit_tr(SEXP ASEXP) {
+RcppExport SEXP _BinReg_tr(SEXP ASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -75,84 +125,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// fastT
-SEXP fastT(const Eigen::Map<Eigen::MatrixXd> A);
-RcppExport SEXP _Probit_fastT(SEXP ASEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
-    rcpp_result_gen = Rcpp::wrap(fastT(A));
-    return rcpp_result_gen;
-END_RCPP
-}
-// fastQF
-SEXP fastQF(const Eigen::Map<Eigen::MatrixXd> X, const Eigen::Map<Eigen::MatrixXd> A);
-RcppExport SEXP _Probit_fastQF(SEXP XSEXP, SEXP ASEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type A(ASEXP);
-    rcpp_result_gen = Rcpp::wrap(fastQF(X, A));
-    return rcpp_result_gen;
-END_RCPP
-}
-// SchurC
-SEXP SchurC(const Eigen::Map<Eigen::MatrixXd> I11, const Eigen::Map<Eigen::MatrixXd> I22, const Eigen::Map<Eigen::MatrixXd> I12);
-RcppExport SEXP _Probit_SchurC(SEXP I11SEXP, SEXP I22SEXP, SEXP I12SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type I11(I11SEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type I22(I22SEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type I12(I12SEXP);
-    rcpp_result_gen = Rcpp::wrap(SchurC(I11, I22, I12));
-    return rcpp_result_gen;
-END_RCPP
-}
-// WLS
-SEXP WLS(const Eigen::Map<Eigen::MatrixXd> Z, const Eigen::Map<Eigen::VectorXd> w, const Eigen::Map<Eigen::VectorXd> y);
-RcppExport SEXP _Probit_WLS(SEXP ZSEXP, SEXP wSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type Z(ZSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type w(wSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(WLS(Z, w, y));
-    return rcpp_result_gen;
-END_RCPP
-}
-// OLS
-SEXP OLS(const Eigen::Map<Eigen::MatrixXd> Z, const Eigen::Map<Eigen::VectorXd> y);
-RcppExport SEXP _Probit_OLS(SEXP ZSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type Z(ZSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(OLS(Z, y));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_Probit_diagQF", (DL_FUNC) &_Probit_diagQF, 2},
-    {"_Probit_fastDet", (DL_FUNC) &_Probit_fastDet, 1},
-    {"_Probit_fastIP", (DL_FUNC) &_Probit_fastIP, 2},
-    {"_Probit_fastInv", (DL_FUNC) &_Probit_fastInv, 1},
-    {"_Probit_fastMMp", (DL_FUNC) &_Probit_fastMMp, 2},
-    {"_Probit_tr", (DL_FUNC) &_Probit_tr, 1},
-    {"_Probit_fastT", (DL_FUNC) &_Probit_fastT, 1},
-    {"_Probit_fastQF", (DL_FUNC) &_Probit_fastQF, 2},
-    {"_Probit_SchurC", (DL_FUNC) &_Probit_SchurC, 3},
-    {"_Probit_WLS", (DL_FUNC) &_Probit_WLS, 3},
-    {"_Probit_OLS", (DL_FUNC) &_Probit_OLS, 2},
+    {"_BinReg_fitOLS", (DL_FUNC) &_BinReg_fitOLS, 2},
+    {"_BinReg_fitWLS", (DL_FUNC) &_BinReg_fitWLS, 3},
+    {"_BinReg_det", (DL_FUNC) &_BinReg_det, 1},
+    {"_BinReg_diagQF", (DL_FUNC) &_BinReg_diagQF, 2},
+    {"_BinReg_matIP", (DL_FUNC) &_BinReg_matIP, 2},
+    {"_BinReg_matInv", (DL_FUNC) &_BinReg_matInv, 1},
+    {"_BinReg_MMP", (DL_FUNC) &_BinReg_MMP, 2},
+    {"_BinReg_matQF", (DL_FUNC) &_BinReg_matQF, 2},
+    {"_BinReg_SchurC", (DL_FUNC) &_BinReg_SchurC, 3},
+    {"_BinReg_tr", (DL_FUNC) &_BinReg_tr, 1},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_Probit(DllInfo *dll) {
+RcppExport void R_init_BinReg(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

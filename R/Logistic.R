@@ -1,35 +1,36 @@
-# Purpose: Fitting function for robit regression
+# Purpose: Fitting function for logistic regression
 # Updated: 180914
 
-#' Fit Robit Regression
+#' Fit Logistic Regression
 #' 
 #' @param y Binary 0/1 outcome vector.
 #' @param X Numeric model matrix.
-#' @param df Degrees of freedom. 
 #' @param sig Significance level, for CIs.
 #' @param eps Tolerance for Newton-Raphson iterations.
 #' @param maxit Maximum number of NR iterations.
 #' @param report Report fitting progress? 
 #' 
-#' @importFrom stats dt pt qt
+#' @importFrom stats plogis dlogis
 #' @importFrom methods new
 #' 
+#' @return An object of class \code{fit} containing the regression coefficients,
+#' information, and residuals.
 #' @examples 
 #' \dontrun{
-#' set.seed(101);
+#' set.seed(100);
 #' # Design matrix
 #' n = 1e3;
 #' X = matrix(rnorm(4*n),nrow=n);
 #' # Coefficient
 #' b = c(1,-0.5,-0.5,0);
-#' # Robit outcomes
-#' y = rBinary(X=X,b=b,model="robit",df=5);
+#' # Logistic outcomes
+#' y = rBinary(X=X,b=b,model="logistic");
 #' # Fit probit model
-#' M = fit.robit(y=y,X=X,df=5);
+#' M = fit.logistic(y=y,X=X);
 #' show(M);
 #' } 
 
-fit.robit = function(y,X,df=7,sig=0.05,eps=1e-8,maxit=10,report=T){
+fit.logistic = function(y,X,sig=0.05,eps=1e-8,maxit=10,report=T){
   # Intput check
   if(!is.numeric(y)){stop("A numeric vector is expected for y.")};
   if(!is.matrix(X)){stop("A numeric matrix is expected for X.")};
@@ -45,7 +46,7 @@ fit.robit = function(y,X,df=7,sig=0.05,eps=1e-8,maxit=10,report=T){
     h0 = eta[key0];
     h1 = eta[key1];
     # Output
-    Out = sum(pt(q=h1,df=df,log.p=T,lower.tail=T))+sum(pt(q=h0,df=df,log.p=T,lower.tail=F));
+    Out = sum(plogis(h1,log.p=T,lower.tail=T))+sum(plogis(h0,log.p=T,lower.tail=F));
     return(Out);
   }
   
@@ -54,7 +55,7 @@ fit.robit = function(y,X,df=7,sig=0.05,eps=1e-8,maxit=10,report=T){
     # Linear predictor
     eta = as.numeric(MMP(X,b));
     # Current weights
-    w = dt(x=eta,df=df)^2/(pt(q=eta,df=df)*pt(q=-eta,df=df));
+    w = dlogis(x=eta);
     # Calculate A=X'WX
     A = diagQF(X=X,w=w);
     return(A);
@@ -69,9 +70,9 @@ fit.robit = function(y,X,df=7,sig=0.05,eps=1e-8,maxit=10,report=T){
     # Linear predictor
     eta = as.numeric(MMP(X,b0));
     # Current weights
-    w = dt(x=eta,df=df)^2/(pt(q=eta,df=df)*pt(q=-eta,df=df));
+    w = dlogis(x=eta);
     # Current working vector
-    u = eta+(y-pt(q=eta,df=df))/dt(x=eta,df=df);
+    u = eta+(y-plogis(eta))/dlogis(eta);
     # Update beta
     b1 = fitWLS(y=u,X=X,w=w)$Beta;
     # Final objective
@@ -129,8 +130,8 @@ fit.robit = function(y,X,df=7,sig=0.05,eps=1e-8,maxit=10,report=T){
   B$p = 2*pnorm(abs(B$Point/B$SE),lower.tail=F);
   
   # Residuals
-  e = y-pt(MMP(X,theta0$b),df=df);
+  e = y-plogis(MMP(X,theta0$b));
   # Output
-  Out = new(Class="fit",Model="Robit",Coefficients=B,Information=J,Residuals=e);
+  Out = new(Class="fit",Model="Logistic",Coefficients=B,Information=J,Residuals=e);
   return(Out);
 }

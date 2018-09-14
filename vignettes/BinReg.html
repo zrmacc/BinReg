@@ -12,9 +12,9 @@
 
 <meta name="author" content="Zachary McCaw" />
 
-<meta name="date" content="2018-08-18" />
+<meta name="date" content="2018-09-14" />
 
-<title>Probit Regression</title>
+<title>Binary Regression Models</title>
 
 
 
@@ -68,79 +68,137 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">Probit Regression</h1>
+<h1 class="title toc-ignore">Binary Regression Models</h1>
 <h4 class="author"><em>Zachary McCaw</em></h4>
-<h4 class="date"><em>2018-08-18</em></h4>
+<h4 class="date"><em>2018-09-14</em></h4>
 
 
 
 <div id="contents" class="section level2">
 <h2>Contents</h2>
 <ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#logistic">Logistic</a></li>
 <li><a href="#probit">Probit</a></li>
 <li><a href="#robit">Robit</a></li>
 </ul>
 </div>
-<div id="probit" class="section level1">
-<h1>Probit</h1>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This package provides implementations of regression models for a binary outcome. Throughout denote the outcome <span class="math inline">\(y_{i}\in\{0,1\}\)</span>, the covariates <span class="math inline">\(x_{i}\in\mathbb{R}^{p}\)</span>, and the linear predictor <span class="math inline">\(\eta_{i} = x_{i}'\beta\)</span>.</p>
+</div>
+<div id="logistic" class="section level1">
+<h1>Logistic</h1>
 <div id="model" class="section level2">
 <h2>Model</h2>
-<p>Suppose <span class="math inline">\(y_{i}\in\{0,1\}\)</span> is a binary outcome, and <span class="math inline">\(z_{i}\in\mathbb{R}^{p}\)</span> is a set of covariates. Let <span class="math inline">\(\eta_{i} = z_{i}'\beta\)</span> denote the linear predictor. Consider the model:</p>
+<p>In logistic regression, the latent variable <span class="math inline">\(z_{i}\)</span> follows a logistic distribution with center <span class="math inline">\(\eta_{i}\)</span> and unit scale:</p>
 <p><span class="math display">\[
-\zeta_{i}|z_{i} \sim N\big(\eta_{i},1) \\
-y_{i} = I[\zeta_{i}&gt;0]
+z_{i}|x_{i} \sim \text{Logistic}\big(\eta_{i},1) \\
+y_{i} = I[z_{i}&gt;0]
 \]</span></p>
 </div>
 <div id="implementation" class="section level2">
 <h2>Implementation</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subjects</span>
+<p>Below, data are simulated for <span class="math inline">\(n=10^{3}\)</span> subjects. The linear predictor depends on four independent, standard normal covariates. The function <code>rBinReg</code> is provided for simulating from binary regression models. The function <code>fit.BinReg</code> with <code>model=&quot;logistic&quot;</code> specifies a logistic model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">100</span>);
+<span class="kw">library</span>(BinReg);
+<span class="co"># Subjects</span>
 n =<span class="st"> </span><span class="fl">1e3</span>;
 <span class="co"># Design matrix</span>
-Z =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dt">n=</span>n*<span class="dv">3</span>),<span class="dt">nrow=</span>n);
+X =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dt">n=</span><span class="dv">4</span>*n),<span class="dt">nrow=</span>n);
 <span class="co"># Regression coefficient</span>
-beta =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,-<span class="dv">1</span>,<span class="dv">1</span>);
-<span class="co"># Linear predictor</span>
-eta =<span class="st"> </span>Z %*%<span class="st"> </span>beta;
-<span class="co"># Probit outcome</span>
-y =<span class="st"> </span><span class="dv">1</span>*(<span class="kw">rnorm</span>(<span class="dt">n=</span>n,<span class="dt">mean=</span>eta)&gt;<span class="dv">0</span>);
-<span class="co"># Recover regression parameters</span>
-M =<span class="st"> </span><span class="kw">fit.Probit</span>(<span class="dt">y=</span>y,<span class="dt">Z=</span>Z);
+b =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,-<span class="fl">0.5</span>,-<span class="fl">0.5</span>,<span class="dv">0</span>);
+<span class="co"># Logistic outcome</span>
+y =<span class="st"> </span><span class="kw">rBinReg</span>(X,b,<span class="dt">model=</span><span class="st">&quot;logistic&quot;</span>);
+<span class="co"># Estimate regression parameters</span>
+M =<span class="st"> </span><span class="kw">fit.BinReg</span>(<span class="dt">y=</span>y,<span class="dt">X=</span>X,<span class="dt">model=</span><span class="st">&quot;logistic&quot;</span>);
 <span class="kw">show</span>(M);</code></pre></div>
-<pre><code>## 5 update(s) performed before tolerance limit. 
-## Fitted Probit Model
+<pre><code>## Objective increment:  75.1 
+## Objective increment:  4.5 
+## Objective increment:  0.0513 
+## Objective increment:  8.84e-06 
+## Objective increment:  2.27e-13 
+## 4 update(s) performed before tolerance limit.
+## 
+## Fitted Logistic Model
 ## Estimated Coefficients:
-##   Coeff    Est     SE      L      U        p
-## 1    z1  0.976 0.0700  0.839  1.110 3.74e-44
-## 2    z2 -1.010 0.0706 -1.140 -0.867 5.66e-46
-## 3    z3  1.080 0.0742  0.931  1.220 1.11e-47</code></pre>
+##   Coeff   Point     SE       L      U        p
+## 1    x1  1.0000 0.0849  0.8370  1.170 3.12e-32
+## 2    x2 -0.5480 0.0794 -0.7030 -0.392 5.32e-12
+## 3    x3 -0.4870 0.0728 -0.6300 -0.344 2.31e-11
+## 4    x4  0.0998 0.0757 -0.0487  0.248 1.88e-01</code></pre>
 </div>
 </div>
-<div id="robit" class="section level1">
-<h1>Robit</h1>
+<div id="probit" class="section level1">
+<h1>Probit</h1>
 <div id="model-1" class="section level2">
 <h2>Model</h2>
-<p>Suppose <span class="math inline">\(y_{i}\in\{0,1\}\)</span> is a binary outcome, and <span class="math inline">\(z_{i}\in\mathbb{R}^{p}\)</span> is a set of covariates. Let <span class="math inline">\(\eta_{i} = z_{i}'\beta\)</span> denote the linear predictor. Consider the model:</p>
+<p>In probit regression, the latent variable <span class="math inline">\(z_{i}\)</span> follows a normal distribution with center <span class="math inline">\(\eta_{i}\)</span> and unit scale:</p>
 <p><span class="math display">\[
-\zeta_{i}|z_{i} \sim t_{\nu}(\eta_{i}) \\
-y_{i} = I[\zeta_{i}&gt;0]
+z_{i}|x_{i} \sim N\big(\eta_{i},1) \\
+y_{i} = I[z_{i}&gt;0]
 \]</span></p>
 </div>
 <div id="implementation-1" class="section level2">
 <h2>Implementation</h2>
+<p>The function <code>fit.BinReg</code> with <code>model=&quot;probit&quot;</code> specifies a probit model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Probit outcome</span>
+y =<span class="st"> </span><span class="kw">rBinReg</span>(X,b,<span class="dt">model=</span><span class="st">&quot;probit&quot;</span>);
+<span class="co"># Estimate regression parameters</span>
+M =<span class="st"> </span><span class="kw">fit.BinReg</span>(<span class="dt">y=</span>y,<span class="dt">X=</span>X,<span class="dt">model=</span><span class="st">&quot;probit&quot;</span>);
+<span class="kw">show</span>(M);</code></pre></div>
+<pre><code>## Objective increment:  106 
+## Objective increment:  16.9 
+## Objective increment:  1.21 
+## Objective increment:  0.0102 
+## Objective increment:  2.75e-06 
+## Objective increment:  3.79e-10 
+## 5 update(s) performed before tolerance limit.
+## 
+## Fitted Probit Model
+## Estimated Coefficients:
+##   Coeff   Point     SE       L      U        p
+## 1    x1  1.0600 0.0661  0.9310  1.190 5.73e-58
+## 2    x2 -0.4670 0.0544 -0.5730 -0.360 9.00e-18
+## 3    x3 -0.4770 0.0505 -0.5760 -0.378 3.65e-21
+## 4    x4  0.0698 0.0506 -0.0293  0.169 1.67e-01</code></pre>
+</div>
+</div>
+<div id="robit" class="section level1">
+<h1>Robit</h1>
+<div id="model-2" class="section level2">
+<h2>Model</h2>
+<p>In robit regression, the latent variable <span class="math inline">\(z_{i}\)</span> follows a <span class="math inline">\(t_{\nu}\)</span> distribution with center <span class="math inline">\(\eta_{i}\)</span>, unit scale, and specified degrees of freedom <span class="math inline">\(\nu\)</span>:</p>
+<p><span class="math display">\[
+z_{i}|x_{i} \sim t_{\nu}(\eta_{i}) \\
+y_{i} = I[z_{i}&gt;0]
+\]</span></p>
+</div>
+<div id="implementation-2" class="section level2">
+<h2>Implementation</h2>
+<p>The function <code>fit.BinReg</code> with <code>model=&quot;robit&quot;</code> specifies a robit model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Degrees of freedom</span>
 df =<span class="st"> </span><span class="dv">7</span>;
 <span class="co"># Robit outcome</span>
-y =<span class="st"> </span><span class="dv">1</span>*(<span class="kw">rt</span>(<span class="dt">n=</span>n,<span class="dt">ncp=</span>eta,<span class="dt">df=</span>df)&gt;<span class="dv">0</span>);
+y =<span class="st"> </span><span class="kw">rBinReg</span>(X,b,<span class="dt">model=</span><span class="st">&quot;robit&quot;</span>,<span class="dt">df=</span>df);
 <span class="co"># Recover regression parameters</span>
-M =<span class="st"> </span><span class="kw">fit.Robit</span>(<span class="dt">y=</span>y,<span class="dt">Z=</span>Z);
+M =<span class="st"> </span><span class="kw">fit.BinReg</span>(<span class="dt">y=</span>y,<span class="dt">X=</span>X,<span class="dt">model=</span><span class="st">&quot;robit&quot;</span>,<span class="dt">df=</span>df);
 <span class="kw">show</span>(M);</code></pre></div>
-<pre><code>## 5 update(s) performed before tolerance limit. 
+<pre><code>## Objective increment:  100 
+## Objective increment:  14.9 
+## Objective increment:  0.802 
+## Objective increment:  0.0036 
+## Objective increment:  2.85e-07 
+## Objective increment:  1.39e-11 
+## 5 update(s) performed before tolerance limit.
+## 
 ## Fitted Robit Model
 ## Estimated Coefficients:
-##   Coeff   Est     SE      L      U        p
-## 1    z1  1.09 0.0827  0.927  1.250 1.35e-39
-## 2    z2 -1.06 0.0816 -1.220 -0.898 1.75e-38
-## 3    z3  1.11 0.0848  0.948  1.280 2.01e-39</code></pre>
+##   Coeff   Point     SE      L       U        p
+## 1    x1  1.0900 0.0753  0.944  1.2400 1.22e-47
+## 2    x2 -0.5370 0.0612 -0.657 -0.4170 1.68e-18
+## 3    x3 -0.4340 0.0544 -0.540 -0.3270 1.52e-15
+## 4    x4 -0.0938 0.0551 -0.202  0.0141 8.85e-02</code></pre>
 </div>
 </div>
 

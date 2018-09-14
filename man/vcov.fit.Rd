@@ -4,14 +4,14 @@
 \alias{vcov.fit}
 \title{Extract Covariance Matrix from a Fitted Regression Model}
 \usage{
-\method{vcov}{fit}(object, ..., inv = T)
+\method{vcov}{fit}(object, ..., inv = F)
 }
 \arguments{
 \item{object}{A \code{fit} object.}
 
 \item{...}{Unused.}
 
-\item{inv}{Invert information matrix? Default is TRUE.}
+\item{inv}{Invert information matrix?}
 }
 \value{
 A numeric matrix.

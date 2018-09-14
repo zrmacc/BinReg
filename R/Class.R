@@ -65,7 +65,7 @@ setMethod(f="show",signature=c(object="fit"),definition=function(object){print.f
 
 coef.fit = function(object,...){
   # Extract coefficients
-  b = object@Coefficients$Est;
+  b = object@Coefficients$Point;
   names(b) = object@Coefficients$Coeff;
   return(b);
 }
@@ -98,14 +98,14 @@ residuals.fit = function(object,...){
 #' 
 #' @param object A \code{fit} object.
 #' @param ... Unused.
-#' @param inv Invert information matrix? Default is TRUE.
+#' @param inv Invert information matrix?
 #' @export
 #' @return A numeric matrix. 
 
-vcov.fit = function(object,...,inv=T){
+vcov.fit = function(object,...,inv=F){
   J = object@Information;
   if(inv){
-    J = fastInv(J);
+    J = matInv(J);
   }
   return(J);
 };

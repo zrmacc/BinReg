@@ -1,8 +1,8 @@
-Package: Probit
-Title: Probit
-Version: 0.1.0
+Package: BinReg
+Title: BinReg
+Version: 0.2.0
 Authors@R: person("Zachary", "McCaw", email = "zmccaw@g.harvard.edu", role = c("aut", "cre"))
-Description: Implementation of probit and robit regression. 
+Description: Implementation of logistic, probit, and robit regression. 
 Depends: R (>= 3.4.2)
 License: GPL-2
 Encoding: UTF-8

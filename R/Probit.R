@@ -1,106 +1,137 @@
-# Purpose: Fitting function for Probit regression
-# Updated: 180818
-
-#' @useDynLib Probit
-#' @importFrom Rcpp sourceCpp
-NULL
-
-########################
-# Probit IRLS
-########################
+# Purpose: Fitting function for probit regression
+# Updated: 180913
 
 #' Fit Probit Regression
 #' 
 #' @param y Binary 0/1 outcome vector.
-#' @param Z Numeric model matrix.
-#' @param alpha Significance level, for CIs.
+#' @param X Numeric model matrix.
+#' @param sig Significance level, for CIs.
 #' @param eps Tolerance for Newton-Raphson iterations.
 #' @param maxit Maximum number of NR iterations.
+#' @param report Report fitting progress? 
+#' 
 #' @importFrom stats dnorm pnorm qnorm
 #' @importFrom methods new
-#' @export 
+#' 
+#' @return An object of class \code{fit} containing the regression coefficients,
+#' information, and residuals.
+#' @examples 
+#' \dontrun{
+#' set.seed(101);
+#' # Design matrix
+#' n = 1e3;
+#' X = matrix(rnorm(4*n),nrow=n);
+#' # Coefficient
+#' b = c(1,-0.5,-0.5,0);
+#' # Probit outcomes
+#' y = rBinary(X=X,b=b,model="probit");
+#' # Fit probit model
+#' M = fit.probit(y=y,X=X);
+#' show(M);
+#' } 
 
-fit.Probit = function(y,Z,alpha=0.05,eps=1e-6,maxit=10){
+fit.probit = function(y,X,sig=0.05,eps=1e-8,maxit=10,report=T){
+  # Intput check
+  if(!is.numeric(y)){stop("A numeric vector is expected for y.")};
+  if(!is.matrix(X)){stop("A numeric matrix is expected for X.")};
+  # Partition
+  key0 = (y==0);
+  key1 = !(key0);
+  
   # Objective function
   Q = function(b){
     # Linear predictor
-    eta = fastMMp(Z,b);
+    eta = MMP(X,b);
     # Parition
-    h0 = eta[y==0];
-    h1 = eta[y==1];
+    h0 = eta[key0];
+    h1 = eta[key1];
     # Output
     Out = sum(pnorm(h1,log.p=T,lower.tail=T))+sum(pnorm(h0,log.p=T,lower.tail=F));
     return(Out);
   }
-  # Observed information
-  obsInfo = function(b){
+  
+  # Information
+  Info = function(b){
     # Linear predictor
-    eta = as.numeric(fastMMp(Z,b));
+    eta = as.numeric(MMP(X,b));
     # Current weights
     w = dnorm(eta)^2/(pnorm(eta)*pnorm(-eta));
-    # Observed information
-    J = diagQF(Z=Z,w=w);
-    return(J);
+    # Calculate A=X'WX
+    A = diagQF(X=X,w=w);
+    return(A);
   }
+  
   # IRLS update
-  Update = function(b){
+  Update = function(theta){
+    # Current beta
+    b0 = theta$b;
+    # Initial objective
+    q0 = Q(b0);
     # Linear predictor
-    eta = as.numeric(fastMMp(Z,b));
+    eta = as.numeric(MMP(X,b0));
     # Current weights
     w = dnorm(eta)^2/(pnorm(eta)*pnorm(-eta));
-    # Current response
-    u = eta + (y-pnorm(eta))/dnorm(eta);
-    # Proposed update
-    Prop = WLS(Z=Z,w=w,y=u);
+    # Current working vector
+    u = eta+(y-pnorm(eta))/dnorm(eta);
+    # Update beta
+    b1 = fitWLS(y=u,X=X,w=w)$Beta;
+    # Final objective
+    q1 = Q(b1);
+    # Increment
+    d = q1-q0;
     # Output
-    Out = list("b"=Prop);
+    Out = list("b"=b1,"d"=d);
     return(Out);
   }
+  
   # Initialize
   theta0 = list();
-  theta0$b = OLS(Z=Z,y=y);
-  theta0$ll = Q(b=theta0$b);
-  ## Newton-Raphson
+  theta0$b = fitOLS(y=y,X=X)$Beta;
+  
+  ## Maximzation
   for(i in 1:maxit){
-    # Propose update
-    theta1 = Update(b=theta0$b);
-    # Proposed objective
-    theta1$ll = Q(b=theta1$b);
-    # Accept first update,
-    # Otherwise, check for improvement
-    if(i==1){
+    # Update
+    theta1 = Update(theta0);
+    # Accept if increment is positive
+    if(theta1$d>0){
       theta0 = theta1;
-    } else {
-      delta = theta1$ll-theta0$ll;
-      if(delta>eps){
-        theta0 = theta1;
-      } else {
-        break;
-      }
+      if(report){cat("Objective increment: ",signif(theta1$d,digits=3),"\n")}
     }
-  }; # End NR
-  ## Report
-  if(i<maxit){
-    cat(paste0(i-1," update(s) performed before tolerance limit."),"\n");
-  } else {
-    cat(paste0(i," update(s) performed without reaching tolerance limit."));
-  }
-  # Observed information
-  J = obsInfo(b=theta0$b);
-  Ji = fastInv(J);
+    # Terminate if increment is below tolerance
+    if(theta1$d<eps){
+      rm(theta1);
+      break;
+    }
+  };
+  
+  ## Fitting report
+  if(report){
+    if(i<maxit){
+      cat(paste0(i-1," update(s) performed before tolerance limit.\n\n"));
+    } else {
+      cat(paste0(i," update(s) performed without reaching tolerance limit.\n\n"));
+    }
+  };
+  
+  # Information
+  J = Info(b=theta0$b);
+  Ji = matInv(J);
   se = sqrt(diag(Ji));
+  
   # Coefficient frame
-  if(is.null(colnames(Z))){colnames(Z)=paste0("z",seq(1:ncol(Z)))};
-  B = data.frame(colnames(Z),theta0$b,se);
-  colnames(B) = c("Coeff","Est","SE");
+  if(is.null(colnames(X))){colnames(X)=paste0("x",seq(1:ncol(X)))};
+  B = data.frame(colnames(X),theta0$b,se);
+  colnames(B) = c("Coeff","Point","SE");
+ 
   # CIs
-  z = qnorm(1-alpha/2);
-  B$L = B$Est-z*B$SE;
-  B$U = B$Est+z*B$SE;
-  B$p = 2*pnorm(abs(B$Est/B$SE),lower.tail=F);
+  z = qnorm(1-sig/2);
+  B$L = B$Point-z*B$SE;
+  B$U = B$Point+z*B$SE;
+  B$p = 2*pnorm(abs(B$Point/B$SE),lower.tail=F);
+  
   # Residuals
-  E = y-pnorm(fastMMp(Z,B$Est));
+  e = y-pnorm(MMP(X,theta0$b));
   # Output
-  Out = new(Class="fit",Model="Probit",Coefficients=B,Information=J,Residuals=E);
+  Out = new(Class="fit",Model="Probit",Coefficients=B,Information=J,Residuals=e);
   return(Out);
 }
