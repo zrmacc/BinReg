@@ -4,12 +4,14 @@
 \alias{residuals.fit}
 \title{Extract Residuals from a Fitted Regression Model}
 \usage{
-\method{residuals}{fit}(object, ...)
+\method{residuals}{fit}(object, ..., type = "raw")
 }
 \arguments{
 \item{object}{A \code{fit} object.}
 
 \item{...}{Unused.}
+
+\item{type}{Either raw or pearson.}
 }
 \value{
 A numeric vector of residuals.

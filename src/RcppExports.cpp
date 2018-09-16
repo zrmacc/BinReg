@@ -42,18 +42,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// diagQF
-SEXP diagQF(const Eigen::Map<Eigen::MatrixXd> X, const Eigen::Map<Eigen::VectorXd> w);
-RcppExport SEXP _BinReg_diagQF(SEXP XSEXP, SEXP wSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type w(wSEXP);
-    rcpp_result_gen = Rcpp::wrap(diagQF(X, w));
-    return rcpp_result_gen;
-END_RCPP
-}
 // matIP
 SEXP matIP(const Eigen::Map<Eigen::MatrixXd> A, const Eigen::Map<Eigen::MatrixXd> B);
 RcppExport SEXP _BinReg_matIP(SEXP ASEXP, SEXP BSEXP) {
@@ -130,7 +118,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BinReg_fitOLS", (DL_FUNC) &_BinReg_fitOLS, 2},
     {"_BinReg_fitWLS", (DL_FUNC) &_BinReg_fitWLS, 3},
     {"_BinReg_det", (DL_FUNC) &_BinReg_det, 1},
-    {"_BinReg_diagQF", (DL_FUNC) &_BinReg_diagQF, 2},
     {"_BinReg_matIP", (DL_FUNC) &_BinReg_matIP, 2},
     {"_BinReg_matInv", (DL_FUNC) &_BinReg_matInv, 1},
     {"_BinReg_MMP", (DL_FUNC) &_BinReg_MMP, 2},

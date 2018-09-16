@@ -6,15 +6,40 @@
 #' @param y Binary 0/1 outcome vector.
 #' @param X Numeric model matrix. Include an intercept. 
 #' @param model Selected from among logistic, probit, and robit.
-#' @param df Degrees of freedom. 
+#' @param offset Fixed component added to the linear predictor. 
+#' @param df Degrees of freedom, if using the robit model. 
 #' @param sig Significance level, for CIs.
 #' @param eps Tolerance for Newton-Raphson iterations.
 #' @param maxit Maximum number of NR iterations.
 #' @param report Report fitting progress? 
 #' 
+#' @importFrom methods new
 #' @export 
+#' @examples
+#' \dontrun{
+#' set.seed(100);
+#' # Design matrix
+#' X = cbind(1,matrix(rnorm(3e3),nrow=1e3));
+#' # Coefficient
+#' b = c(1,-1,1,0);
+#' 
+#' # Logistic observations
+#' y = rBinReg(X,b,model="logistic");
+#' # Estimate logistic model
+#' M = Fit.BinReg(y,X,model="logistic");
+#' 
+#' # Probit observations
+#' y = rBinReg(X,b,model="probit");
+#' # Estimate probit model
+#' M = Fit.BinReg(y,X,model="probit");
+#' 
+#' # Robit observations
+#' y = rBinReg(X,b,model="robit",df=5);
+#' # Estimate robit model
+#' M = Fit.BinReg(y,X,model="robit",df=5);
+#' }
 
-fit.BinReg = function(y,X=NULL,model="logistic",df=NULL,sig=0.05,eps=1e-8,maxit=10,report=T){
+Fit.BinReg = function(y,X=NULL,model="logistic",offset=0,df=NULL,sig=0.05,eps=1e-8,maxit=10,report=T){
   # Intput check
   n = length(y);
   if(!is.numeric(y)){stop("A numeric vector is expected for y.")};
@@ -29,9 +54,9 @@ fit.BinReg = function(y,X=NULL,model="logistic",df=NULL,sig=0.05,eps=1e-8,maxit=
   # Information function
   Info = function(h){
     # Current weights
-    w = weight.BinReg(h=h,model=model,df=df);
+    w = as.numeric(weight.BinReg(h=h,model=model,df=df));
     # Calculate A=X'WX
-    A = diagQF(X=X,w=w);
+    A = matIP(X,w*X);
     return(A);
   }
   # Upate function
@@ -39,7 +64,7 @@ fit.BinReg = function(y,X=NULL,model="logistic",df=NULL,sig=0.05,eps=1e-8,maxit=
     # Current beta
     b0 = theta$b;
     # Current linear predictor
-    h0 = MMP(X,b0);
+    h0 = MMP(X,b0)+offset;
     # Initial objective
     q0 = Q(h0);
     # Current weights
@@ -48,11 +73,11 @@ fit.BinReg = function(y,X=NULL,model="logistic",df=NULL,sig=0.05,eps=1e-8,maxit=
     m = act.BinReg(h=h0,model=model,df=df);
     # Current working vector
     delta = delta.BinReg(h=h0,model=model,df=df);
-    u = h0+(y-m)/(delta);
+    u = (h0-offset)+(y-m)/(delta);
     # Update beta
     b1 = fitWLS(y=u,X=X,w=w)$Beta;
     # Updated linear predictor
-    h1 = MMP(X,b1);
+    h1 = MMP(X,b1)+offset;
     # Final objective
     q1 = Q(h1);
     # Increment
@@ -64,7 +89,7 @@ fit.BinReg = function(y,X=NULL,model="logistic",df=NULL,sig=0.05,eps=1e-8,maxit=
   
   # Initialize
   theta0 = list();
-  theta0$b = fitOLS(y=y,X=X)$Beta;
+  theta0$b = fitOLS(y=(y-offset),X=X)$Beta;
   
   ## Maximzation
   for(i in 1:maxit){
@@ -94,7 +119,7 @@ fit.BinReg = function(y,X=NULL,model="logistic",df=NULL,sig=0.05,eps=1e-8,maxit=
   # Final coefficient
   b1 = theta0$b;
   # Final linear predictor
-  h1 = MMP(X,b1);
+  h1 = MMP(X,b1)+offset;
   # Information
   J = Info(h=h1);
   Ji = matInv(J);
@@ -113,8 +138,8 @@ fit.BinReg = function(y,X=NULL,model="logistic",df=NULL,sig=0.05,eps=1e-8,maxit=
   
   # Residuals
   m = act.BinReg(h=h1,model=model,df=df);
-  e = (y-m)/sqrt(m*(1-m));
+  e = (y-m);
   # Output
-  Out = new(Class="fit",Model="Logistic",Coefficients=B,Information=J,Residuals=e);
+  Out = new(Class="fit",Model=model,Df=list("df"=df),Coefficients=B,Eta=h1,Information=J,Residuals=e);
   return(Out);
 };

@@ -50,19 +50,6 @@ det <- function(A) {
     .Call('_BinReg_det', PACKAGE = 'BinReg', A)
 }
 
-#' Diagonal Quadratic Form
-#'
-#' Calculates the matrix \eqn{X'WX}, where \eqn{W} is a diagonal
-#' matrix. 
-#'
-#' @param X Design matrix.
-#' @param w Weight vector.
-#' @return Numeric matrix. 
-#'
-diagQF <- function(X, w) {
-    .Call('_BinReg_diagQF', PACKAGE = 'BinReg', X, w)
-}
-
 #' Matrix Inner Product
 #'
 #' Calculates the product \eqn{A'B}.

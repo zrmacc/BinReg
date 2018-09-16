@@ -20,8 +20,11 @@
 rBinReg = function(X,b,model="logistic",df=NULL){
   # Input check
   n = nrow(X);
+  q = ncol(X);
   if(!is.matrix(X)){stop("A numeric matrix is expected for X.")};
   if(!is.vector(b)){stop("A numeric vector is expected for b.")};
+  if(length(b)!=q){stop("b should have as many elements as columns in X.")};
+  # Model selection
   Choices = c("logistic","probit","robit");
   if(!(model%in%Choices)){stop("Select model from among: logistic, probit, robit.")};
   if((model=="robit")&&is.null(df)){stop("If using the robit model, specify degrees of freedom.")};

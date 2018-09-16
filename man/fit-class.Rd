@@ -12,7 +12,11 @@ Defines the object class returned by fitting functions.
 \describe{
 \item{\code{Model}}{Type of fit.}
 
+\item{\code{Df}}{Degrees of freedom, if using the robit model.}
+
 \item{\code{Coefficients}}{Regression coefficients.}
+
+\item{\code{Eta}}{Linear predictors.}
 
 \item{\code{Information}}{Information.}
 
