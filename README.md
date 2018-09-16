@@ -76,7 +76,7 @@ show(M);
 
 ## Inference
 
-Wald tests for individual coefficients are stored in `M@Coefficients` and displayed using the `show` method. The function `Score.BinReg` performs score tests on subsets of the regression coefficients. The test is specified using a logical vector `L` with as many elements as columns in the model matrix `X`. An element of `L` is set to `TRUE` if the regression coefficient for that column of `X` is fixed under $H_{0}$. An element of `L` is set to `FALSE` if the regression coefficient for that column requires estimation under $H_{0}$. At least one element of `L` must be `TRUE` (i.e. a test must be specified) and at least on element of `L` must be `FALSE` (i.e. a null model must be estimable).
+Wald tests for individual coefficients are stored in `M@Coefficients` and displayed using the `show` method. The function `Score.BinReg` performs score tests on subsets of the regression coefficients. The test is specified using a logical vector `L` with as many elements as columns in the model matrix `X`. An element of `L` is set to `TRUE` if the regression coefficient for that column of `X` is fixed under $H_{0}$. An element of `L` is set to `FALSE` if the regression coefficient for that column requires estimation under $H_{0}$. At least one element of `L` must be `TRUE` (i.e. a test must be specified) and at least one element of `L` must be `FALSE` (i.e. a null model must be estimable).
 
 Below, various hypothses are tested on the example data. The first is an overall test that the coefficients for all covariates, other than the intercept, are zero. The null hypothesis is $H_{0}:\beta_{1}=\beta_{2}=\beta_{3}=\beta_{4}=0$, which is false. The second is an individual test that the coefficient for the fourth covariate is zero. The null hypothesis is $H_{0}:\beta_{4}=0$, which is true. The third is a joint test that the coefficient for the second covariate is zero, and the coefficient for the fourth covariate is two. The null hypothesis is $H_{0}:\beta_{2}=0,\beta_{4}=2$, which if false. The fourth is a joint test that the coefficients for the first and third covariates are equal to negative one. The null hypothesis is $H_{0}:\beta_{1}=\beta_{3}=-1$, which is true. All models include an intercept $\beta_{0}$, since in each case `L[1]=FALSE`. 
 
@@ -89,7 +89,7 @@ cat("Test of b4=0:\n");
 Score.BinReg(y=y,X=X,L=c(F,F,F,F,T),model="logistic",report=F);
 cat("\n");
 cat("Test of b2=0, b4=2:\n");
-Score.BinReg(y=y,X=X,L=c(F,F,F,T,T),b10=c(0,2),model="logistic",report=F);
+Score.BinReg(y=y,X=X,L=c(F,F,T,F,T),b10=c(0,2),model="logistic",report=F);
 cat("\n");
 cat("Test of b1=b3=-1:\n");
 Score.BinReg(y=y,X=X,L=c(F,T,F,T,F),b10=c(-1,-1),model="logistic",report=F);
@@ -106,8 +106,8 @@ cat("\n");
 ## 0.6583181 1.0000000 0.4171544 
 ## 
 ## Test of b2=0, b4=2:
-##         Score            df             p 
-##  9.506807e+02  2.000000e+00 3.650072e-207 
+##    Score       df        p 
+## 1665.101    2.000    0.000 
 ## 
 ## Test of b1=b3=-1:
 ##     Score        df         p 
@@ -172,7 +172,7 @@ cat("Test of b4=0:\n");
 Score.BinReg(y=y,X=X,L=c(F,F,F,F,T),model="probit",report=F);
 cat("\n");
 cat("Test of b2=0, b4=2:\n");
-Score.BinReg(y=y,X=X,L=c(F,F,F,T,T),b10=c(0,2),model="probit",report=F);
+Score.BinReg(y=y,X=X,L=c(F,F,T,F,T),b10=c(0,2),model="probit",report=F);
 cat("\n");
 cat("Test of b1=b3=-1:\n");
 Score.BinReg(y=y,X=X,L=c(F,T,F,T,F),b10=c(-1,-1),model="probit",report=F);
@@ -190,7 +190,7 @@ cat("\n");
 ## 
 ## Test of b2=0, b4=2:
 ##    Score       df        p 
-## 7333.243    2.000    0.000 
+## 14293.39     2.00     0.00 
 ## 
 ## Test of b1=b3=-1:
 ##     Score        df         p 
@@ -210,7 +210,7 @@ $$
 
 ## Estimation
 
-The function `Rit.BinReg` with `model="robit"` specifies a robit model. 
+The function `Fit.BinReg` with `model="robit"` specifies a robit model. Note that the degrees of freedom requires specification. The robit model with `df=7` is similar to the logistic model. 
 
 
 ```r
@@ -245,7 +245,7 @@ show(M);
 
 ## Inference
 
-The same hypotheses considered previously are tested for the robit model. 
+The same hypotheses considered previously are tested for the robit model. Note that the degrees of freedom requires specification.
 
 
 ```r
@@ -256,7 +256,7 @@ cat("Test of b4=0:\n");
 Score.BinReg(y=y,X=X,L=c(F,F,F,F,T),model="robit",df=df,report=F);
 cat("\n");
 cat("Test of b2=0, b4=2:\n");
-Score.BinReg(y=y,X=X,L=c(F,F,F,T,T),b10=c(0,2),model="robit",df=df,report=F);
+Score.BinReg(y=y,X=X,L=c(F,F,T,F,T),b10=c(0,2),model="robit",df=df,report=F);
 cat("\n");
 cat("Test of b1=b3=-1:\n");
 Score.BinReg(y=y,X=X,L=c(F,T,F,T,F),b10=c(-1,-1),model="robit",df=df,report=F);
@@ -274,7 +274,7 @@ cat("\n");
 ## 
 ## Test of b2=0, b4=2:
 ##    Score       df        p 
-## 1723.926    2.000    0.000 
+## 3598.797    2.000    0.000 
 ## 
 ## Test of b1=b3=-1:
 ##      Score         df          p 

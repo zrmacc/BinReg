@@ -132,7 +132,7 @@ M =<span class="st"> </span><span class="kw">Fit.BinReg</span>(<span class="dt">
 </div>
 <div id="inference" class="section level2">
 <h2>Inference</h2>
-<p>Wald tests for individual coefficients are stored in <code>M@Coefficients</code> and displayed using the <code>show</code> method. The function <code>Score.BinReg</code> performs score tests on subsets of the regression coefficients. The test is specified using a logical vector <code>L</code> with as many elements as columns in the model matrix <code>X</code>. An element of <code>L</code> is set to <code>TRUE</code> if the regression coefficient for that column of <code>X</code> is fixed under <span class="math inline">\(H_{0}\)</span>. An element of <code>L</code> is set to <code>FALSE</code> if the regression coefficient for that column requires estimation under <span class="math inline">\(H_{0}\)</span>. At least one element of <code>L</code> must be <code>TRUE</code> (i.e. a test must be specified) and at least on element of <code>L</code> must be <code>FALSE</code> (i.e. a null model must be estimable).</p>
+<p>Wald tests for individual coefficients are stored in <code>M@Coefficients</code> and displayed using the <code>show</code> method. The function <code>Score.BinReg</code> performs score tests on subsets of the regression coefficients. The test is specified using a logical vector <code>L</code> with as many elements as columns in the model matrix <code>X</code>. An element of <code>L</code> is set to <code>TRUE</code> if the regression coefficient for that column of <code>X</code> is fixed under <span class="math inline">\(H_{0}\)</span>. An element of <code>L</code> is set to <code>FALSE</code> if the regression coefficient for that column requires estimation under <span class="math inline">\(H_{0}\)</span>. At least one element of <code>L</code> must be <code>TRUE</code> (i.e. a test must be specified) and at least one element of <code>L</code> must be <code>FALSE</code> (i.e. a null model must be estimable).</p>
 <p>Below, various hypothses are tested on the example data. The first is an overall test that the coefficients for all covariates, other than the intercept, are zero. The null hypothesis is <span class="math inline">\(H_{0}:\beta_{1}=\beta_{2}=\beta_{3}=\beta_{4}=0\)</span>, which is false. The second is an individual test that the coefficient for the fourth covariate is zero. The null hypothesis is <span class="math inline">\(H_{0}:\beta_{4}=0\)</span>, which is true. The third is a joint test that the coefficient for the second covariate is zero, and the coefficient for the fourth covariate is two. The null hypothesis is <span class="math inline">\(H_{0}:\beta_{2}=0,\beta_{4}=2\)</span>, which if false. The fourth is a joint test that the coefficients for the first and third covariates are equal to negative one. The null hypothesis is <span class="math inline">\(H_{0}:\beta_{1}=\beta_{3}=-1\)</span>, which is true. All models include an intercept <span class="math inline">\(\beta_{0}\)</span>, since in each case <code>L[1]=FALSE</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="st">&quot;Test of b1=b2=b3=b4=0:</span><span class="ch">\n</span><span class="st">&quot;</span>);
 <span class="kw">Score.BinReg</span>(<span class="dt">y=</span>y,<span class="dt">X=</span>X,<span class="dt">L=</span><span class="kw">c</span>(F,T,T,T,T),<span class="dt">model=</span><span class="st">&quot;logistic&quot;</span>,<span class="dt">report=</span>F);
@@ -244,7 +244,7 @@ y_{i} = I[z_{i}&gt;0]
 </div>
 <div id="estimation-2" class="section level2">
 <h2>Estimation</h2>
-<p>The function <code>Rit.BinReg</code> with <code>model=&quot;robit&quot;</code> specifies a robit model.</p>
+<p>The function <code>Fit.BinReg</code> with <code>model=&quot;robit&quot;</code> specifies a robit model. Note that the degrees of freedom requires specification. The robit model with <code>df=7</code> is similar to the logistic model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Degrees of freedom</span>
 df =<span class="st"> </span><span class="dv">7</span>;
 <span class="co"># Robit outcome</span>
@@ -272,7 +272,7 @@ M =<span class="st"> </span><span class="kw">Fit.BinReg</span>(<span class="dt">
 </div>
 <div id="inference-2" class="section level2">
 <h2>Inference</h2>
-<p>The same hypotheses considered previously are tested for the robit model.</p>
+<p>The same hypotheses considered previously are tested for the robit model. Note that the degrees of freedom requires specification.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="st">&quot;Test of b1=b2=b3=b4=0:</span><span class="ch">\n</span><span class="st">&quot;</span>);
 <span class="kw">Score.BinReg</span>(<span class="dt">y=</span>y,<span class="dt">X=</span>X,<span class="dt">L=</span><span class="kw">c</span>(F,T,T,T,T),<span class="dt">model=</span><span class="st">&quot;robit&quot;</span>,<span class="dt">df=</span>df,<span class="dt">report=</span>F);
 <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>);
